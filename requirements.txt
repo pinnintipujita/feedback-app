@@ -3,3 +3,4 @@ werkzeug
 itsdangerous
 jinja2
 click
+psycopg2-binary
