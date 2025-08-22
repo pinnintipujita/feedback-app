@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.secret_key = "admintest"  # Required for sessions
 
 # ----------------- DB Helpers -----------------
-DATABASE_URL = os.getenv("DATABASE_URL")  # Set in Vercel Environment Variables
+DATABASE_URL = os.getenv("DATABASE_URL")  # Add this in Vercel environment variables
 
 def get_db():
     if "db" not in g:
@@ -135,7 +135,6 @@ def admin():
 def block_user(user_id):
     db = get_db()
     cur = db.cursor()
-    # Toggle blocked state
     cur.execute("UPDATE users SET blocked = NOT blocked WHERE id=%s", (user_id,))
     db.commit()
     cur.close()
@@ -177,3 +176,7 @@ def edit_user(user_id):
 # ----------------- Run Init -----------------
 with app.app_context():
     init_db()
+
+# Required for Vercel
+if __name__ == "__main__":
+    app.run(debug=True)
