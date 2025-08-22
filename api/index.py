@@ -1,43 +1,45 @@
-from flask import Flask, render_template, request, redirect, session, url_for, g
+import os
 import psycopg2
 import psycopg2.extras
-import os
+from flask import Flask, render_template, request, redirect, session, url_for, g
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "admintest")
 
 # ----------------- Database Config -----------------
 DATABASE_URL = os.getenv(
-    "DATABASE_URL",
+    "SUPABASE_DB_URL",
     "postgresql://postgres:Pujita123Pujita@db.njtgheclmepthxfxfroh.supabase.co:5432/postgres"
 )
 
-
 def get_db():
+    """Connect to PostgreSQL (Supabase)"""
     if "db" not in g:
-        g.db = psycopg2.connect(DATABASE_URL)
+        try:
+            g.db = psycopg2.connect(DATABASE_URL, sslmode="require")
+        except Exception as e:
+            print("❌ Database connection error:", e)
+            raise
     return g.db
-
 
 @app.teardown_appcontext
 def close_db(error):
+    """Close DB connection"""
     db = g.pop("db", None)
     if db is not None:
         db.close()
-
 
 # ----------------- Routes -----------------
 @app.route("/")
 def home():
     return redirect(url_for("login"))
 
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         db = get_db()
         cur = db.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -59,12 +61,11 @@ def login():
 
     return render_template("admin_login.html", error=error)
 
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         db = get_db()
         cur = db.cursor()
@@ -79,7 +80,6 @@ def register():
 
     return render_template("register.html")
 
-
 @app.route("/collection")
 def collection():
     if "user" not in session:
@@ -93,12 +93,11 @@ def collection():
 
     return render_template("collection.html", feedbacks=feedbacks)
 
-
 @app.route("/feedback", methods=["GET", "POST"])
 def feedback():
     if request.method == "POST":
-        name = request.form["name"]
-        message = request.form["message"]
+        name = request.form.get("name")
+        message = request.form.get("message")
 
         db = get_db()
         cur = db.cursor()
@@ -111,7 +110,6 @@ def feedback():
         return render_template("success.html")
 
     return render_template("feedback.html")
-
 
 @app.route("/admin")
 def admin():
@@ -126,7 +124,6 @@ def admin():
 
     return render_template("admin_dashboard.html", users=users)
 
-
 @app.route("/admin/userview")
 def admin_userview():
     if "user" not in session:
@@ -139,7 +136,6 @@ def admin_userview():
     cur.close()
 
     return render_template("admin_userview.html", users=users)
-
 
 @app.route("/edit_user/<int:user_id>", methods=["GET", "POST"])
 def edit_user(user_id):
@@ -163,7 +159,6 @@ def edit_user(user_id):
     cur.close()
     return render_template("edit_user.html", user=user)
 
-
 @app.route("/edit_feedback/<int:feedback_id>", methods=["GET", "POST"])
 def edit_feedback(feedback_id):
     if "user" not in session:
@@ -173,7 +168,7 @@ def edit_feedback(feedback_id):
     cur = db.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     if request.method == "POST":
-        message = request.form["message"]
+        message = request.form.get("message")
         cur.execute(
             "UPDATE feedback SET message=%s WHERE id=%s", (message, feedback_id)
         )
@@ -186,13 +181,11 @@ def edit_feedback(feedback_id):
     cur.close()
     return render_template("edit_feedback.html", feedback=feedback)
 
-
 @app.route("/logout")
 def logout():
     session.pop("user", None)
     return redirect(url_for("login"))
 
-
 # ----------------- Run -----------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
