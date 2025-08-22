@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>User Login & Registration</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+/* Background - gradient with abstract shapes */
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #d7e9f7, #f0f4f8);
+    margin:0; 
+    padding:0; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Decorative abstract circles */
+body::before, body::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(100, 181, 246, 0.15);
+    z-index: 0;
+}
+body::before {
+    width: 300px; height: 300px;
+    top: -100px; left: -100px;
+}
+body::after {
+    width: 400px; height: 400px;
+    bottom: -150px; right: -150px;
+}
+
+/* Container */
+.container { 
+    position: relative;
+    z-index: 1;
+    width: 400px; 
+    background: rgba(255,255,255,0.9);
+    padding: 50px 35px; 
+    border-radius: 30px 5px 30px 5px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1); 
+    text-align:center; 
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Smooth fade animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Title */
+h2 { 
+    margin-bottom:25px; 
+    color:#1e3c72; 
+    font-size: 26px; 
+    font-weight: bold;
+}
+
+/* Inputs */
+input { 
+    width:100%; 
+    padding:14px; 
+    margin:14px 0; 
+    border-radius:10px; 
+    border:1px solid #ccc; 
+    transition: all 0.3s ease; 
+    background: #f9fbfd;
+    font-size: 15px;
+}
+input:focus {
+    border-color: #64b5f6;
+    outline: none;
+    box-shadow: 0 0 8px rgba(100,181,246,0.4);
+}
+
+/* Buttons */
+button { 
+    width:100%; 
+    padding:14px; 
+    background: linear-gradient(135deg, #1e88e5, #42a5f5);
+    color:#fff; 
+    font-weight:600;
+    font-size: 15px;
+    border:none; 
+    border-radius:10px; 
+    cursor:pointer; 
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+button:hover { 
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(66,165,245,0.4);
+}
+
+/* Messages */
+.message { 
+    margin-top:15px; 
+    font-weight:bold; 
+    font-size: 14px;
+}
+.message.success { color:#2e7d32; }
+.message.error { color:#c62828; }
+
+/* Toggle link */
+.toggle-link { 
+    display:block; 
+    margin-top:20px; 
+    cursor:pointer; 
+    color:#1565c0; 
+    text-decoration:none; 
+    font-weight:500;
+    transition: color 0.3s;
+}
+.toggle-link:hover { 
+    color:#0d47a1;
+}
+
+/* Hide form */
+.hidden { display:none; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2 id="formTitle">{{ 'Update User' if edit_mode else 'Login' }}</h2>
+    
+    <!-- Login Form -->
+    <form id="loginForm" method="POST" {% if edit_mode %}class="hidden"{% endif %}>
+        <input type="hidden" name="action" value="login">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <!-- Register / Edit Form -->
+    <form id="registerForm" method="POST"
+          action="{{ url_for('edit_user', user_id=user['id']) if edit_mode else url_for('login_register') }}"
+          class="{% if not edit_mode %}hidden{% endif %}">
+
+        <input type="hidden" name="action" value="{{ 'edit' if edit_mode else 'register' }}">
+
+        <label for="fullname">User Details:</label>
+        <input type="text" id="fullname" name="fullname" placeholder="Full Name"
+               value="{{ user['fullname'] if edit_mode else '' }}" required>
+
+        <input type="text" name="username" placeholder="Username"
+               value="{{ user['username'] if edit_mode else '' }}" required>
+
+        <input type="email" name="email" placeholder="Email"
+               value="{{ user['email'] if edit_mode else '' }}" required>
+
+        <input type="password" name="password" placeholder="Password"
+               {% if not edit_mode %} required {% endif %}>
+
+        <button type="submit">{{ 'Update User' if edit_mode else 'Register' }}</button>
+    </form>
+
+    <!-- Messages -->
+    {% if error %}
+        <p class="message error">{{ error }}</p>
+    {% endif %}
+    {% if success %}
+        <p class="message success">{{ success }}</p>
+    {% endif %}
+
+    <!-- Toggle Link (hidden in edit mode) -->
+    {% if not edit_mode %}
+        <span class="toggle-link" onclick="toggleForms()">Don't have an account? Register</span>
+    {% endif %}
+</div>
+
+<script>
+function toggleForms() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const formTitle = document.getElementById('formTitle');
+    const toggleLink = document.querySelector('.toggle-link');
+
+    if (loginForm.classList.contains('hidden')) {
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+        formTitle.textContent = "Login";
+        toggleLink.textContent = "Don't have an account? Register";
+    } else {
+        loginForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+        formTitle.textContent = "Register";
+        toggleLink.textContent = "Already have an account? Login";
+    }
+}
+</script>
+</body>
+</html>

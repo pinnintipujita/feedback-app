@@ -1,0 +1,222 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback Selection</title>
+  <style>
+    body {
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, #f9f6f7, #f3e8f9, #f8e1f4);
+      background-attachment: fixed;
+    }
+
+    /* Floating flower petals */
+    .petal {
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      background: url("https://i.ibb.co/qjPn7m3/petal.png") no-repeat center/contain;
+      animation: fall linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-10%) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0.5; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.92);
+      padding: 40px 35px;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      width: 420px;
+      text-align: center;
+      backdrop-filter: blur(15px);
+      animation: fadeIn 0.9s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      color: #2c2c2c;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 8px;
+      font-weight: 600;
+      color: #333;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      background: #fff;
+      transition: all 0.3s;
+    }
+
+    select:focus {
+      border-color: #b388eb;
+      box-shadow: 0 0 12px rgba(179, 136, 235, 0.5);
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 25px;
+      background: linear-gradient(135deg, #d9a7ff, #b388eb);
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0px 6px 20px rgba(179,136,235,0.3);
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0px 8px 25px rgba(179,136,235,0.5);
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .error-message {
+      color: #d62828;
+      margin-top: 15px;
+      font-size: 14px;
+      font-weight: 600;
+      display: none;
+      animation: shake 0.3s;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating petals -->
+  <script>
+    for (let i = 0; i < 15; i++) {
+      const petal = document.createElement("div");
+      petal.classList.add("petal");
+      petal.style.left = Math.random() * 100 + "vw";
+      petal.style.animationDuration = 8 + Math.random() * 5 + "s";
+      petal.style.animationDelay = Math.random() * 5 + "s";
+      document.body.appendChild(petal);
+    }
+  </script>
+
+  <div class="container">
+    <!-- Admin Login Button 
+  <div class="top-bar" style="text-align: right; margin-bottom: 15px;">
+    <a href="{{ url_for('admin_login') }}" class="login-button" 
+       style="background:#333;color:#fff;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:14px;">
+      Admin Login
+    </a>
+  </div>-->
+    <h2>Feedback Selection</h2>
+    <label for="category">Select Feedback Type:</label>
+    <select id="category">
+      <option value="">--Choose--</option>
+      <option value="college">College</option>
+      <option value="restaurant">Restaurant</option>
+      <option value="mall">Shopping Mall</option>
+    </select>
+
+    <div id="optionsDiv" style="display:none;">
+      <label for="optionsSelect">Select an Option:</label>
+      <select id="optionsSelect">
+        <option value="">--Choose--</option>
+      </select>
+    </div>
+
+    <button onclick="goToFeedback()">Submit</button>
+    <div id="errorMessage" class="error-message"></div>
+  </div>
+
+  <script>
+    const category = document.getElementById('category');
+    const optionsDiv = document.getElementById('optionsDiv');
+    const optionsSelect = document.getElementById('optionsSelect');
+    const errorMessage = document.getElementById('errorMessage');
+
+    const data = {
+      college: ["SITAM", "GVP", "Raghu", "Lendi", "JNTUGV", "Miracle", "Avanthi", "MVGRCE", "Maharajahs College"],
+      restaurant: ["Daksha", "Platform 65", "Meet & Eat", "Hotel SVN Lake Palace", "Mayura", "Happy Restaurant"],
+      mall: ["Fort City Centre Mall", "CMR Shopping Mall", "South India Shopping Mall", "Krishna Shopping Mall", "Soundarya Shopping Mall", "SR Shopping Mall"]
+    };
+
+    category.addEventListener('change', function() {
+      const selected = this.value;
+      optionsSelect.innerHTML = '<option value="">--Choose--</option>';
+      if (selected && data[selected]) {
+        data[selected].forEach(item => {
+          const option = document.createElement('option');
+          option.value = item;
+          option.textContent = item;
+          optionsSelect.appendChild(option);
+        });
+        optionsDiv.style.display = 'block';
+      } else {
+        optionsDiv.style.display = 'none';
+      }
+      errorMessage.style.display = "none"; 
+    });
+
+    function goToFeedback() {
+      const selectedCategory = category.value;
+      const selectedOption = optionsSelect.value;
+
+      errorMessage.style.display = "none"; 
+
+      if (!selectedCategory) {
+        errorMessage.textContent = "⚠️ Please select a feedback type.";
+        errorMessage.style.display = "block";
+        return;
+      }
+
+      if (optionsDiv.style.display === "block" && !selectedOption) {
+        errorMessage.textContent = "⚠️ Please select an option.";
+        errorMessage.style.display = "block";
+        return;
+      }
+
+      if (selectedCategory && selectedOption) {
+        window.location.href = `/feedback?category=${encodeURIComponent(selectedCategory)}&name=${encodeURIComponent(selectedOption)}`;
+      }
+    }
+  </script>
+</body>
+</html>
