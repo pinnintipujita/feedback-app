@@ -3,7 +3,11 @@ import psycopg2
 import psycopg2.extras
 import os
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder=os.path.join(os.path.dirname(__file__), "../templates"),
+    static_folder=os.path.join(os.path.dirname(__file__), "../static")
+)
 app.secret_key = "admintest"  # Required for sessions
 
 # ----------------- DB Helpers -----------------
