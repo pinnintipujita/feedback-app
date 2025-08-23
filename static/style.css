@@ -1,27 +1,40 @@
-
-
+/* Core Styling & Variables */
+:root {
+    --primary-color: #4b0b44;
+    --secondary-color: #4b025a;
+    --accent-color: #7cc2de;
+    --background-color: #74d6ea;
+    --text-color: #333;
+    --card-background: rgba(133, 232, 243, 0.85);
+    --border-color: #7cc2de;
+}
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #74d6ea;
+    background-color: var(--background-color);
     padding: 50px;
-    background-image:url(feedback.jpg);
+    background-image: url(feedback.jpg);
     background-size: cover;
-    background-repeat: no-repeat; 
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    color: var(--text-color);
 }
 
+/* Base Container & Form */
 .container {
     max-width: 500px;
     margin: auto;
-    background-color: rgb(133, 232, 243);
+    background-color: var(--card-background);
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    backdrop-filter: blur(5px);
 }
 
 h2 {
     text-align: center;
-    color: #333;
+    color: var(--text-color);
 }
 
 label {
@@ -31,35 +44,52 @@ label {
 }
 
 input[type="text"],
+input[type="email"],
+input[type="password"],
 textarea {
     width: 100%;
     padding: 10px;
     margin-top: 8px;
-    border: 1px solid #7cc2de;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     resize: vertical;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
 }
 
+/* Button Styling */
 button {
     margin-top: 20px;
     width: 100%;
     padding: 12px;
-    background-color: #4b0b44;
+    background-color: var(--primary-color);
     color: white;
     font-size: 16px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #4b025a;
+    background-color: var(--secondary-color);
 }
 
-#statusMessage {
+/* Status Messages */
+#statusMessage, .message.success, .message.error {
     margin-top: 15px;
     font-size: 14px;
+    text-align: center;
 }
+
+.message.error {
+    color: #c62828;
+}
+
+.message.success {
+    color: #2e7d32;
+}
+
+/* Thank You Page Styling */
 .thankyou-container {
     display: flex;
     flex-direction: column;
@@ -69,6 +99,8 @@ button:hover {
     text-align: center;
     box-sizing: border-box;
     padding: 5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .thankyou-message {
@@ -98,42 +130,17 @@ button:hover {
     background-color: #e67a8a;
     color: white;
 }
-.thankyou-body {
-    font-family: Arial, sans-serif;
-    padding: 50px;
-    background-color: #f9eaf9;
-    background-image: url("./flower.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-}
 
-.top-bar {
-  display: flex;
-  justify-content: flex-end;
-  padding: 15px 20px;
-  background-color: #e6f0ff;
-}
-
-.login-button {
-  text-decoration: none;
-  background-color: #4b0082;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-weight: bold;
-}
-
-.login-button:hover {
-  background-color: #36005e;
-}
+/* Responsive Login/Registration Form Body */
 body.form-body {
     display: flex;
-    justify-content: center;   /* center horizontally */
-    align-items: center;       /* center vertically */
-    height: 100vh;             /* full viewport height */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
     margin: 0;
-    background-color: #f0f2f5; /* subtle background */
-    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    background-image: none; /* Override background image for forms */
+    padding: 0;
 }
 
 .form-container {
@@ -143,4 +150,25 @@ body.form-body {
     border-radius: 8px;
     width: 320px;
     text-align: center;
+}
+
+/* Top Bar and Login Button */
+.top-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px 20px;
+    background-color: #e6f0ff;
+}
+
+.login-button {
+    text-decoration: none;
+    background-color: #4b0082;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.login-button:hover {
+    background-color: #36005e;
 }
