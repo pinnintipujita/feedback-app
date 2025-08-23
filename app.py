@@ -175,6 +175,10 @@ def collection():
         return redirect(url_for('login_register'))
     return render_template('collection.html')
 
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204  # Returns a "No Content" response
+
 # ----------------- Feedback routes -----------------
 @app.route('/go-feedback', methods=['POST'])
 def go_feedback():
