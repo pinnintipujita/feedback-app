@@ -13,7 +13,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: var(--background-color);
     padding: 50px;
-    background-image: url(feedback.jpg);
+    background-image: url(./feedback.jpg);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
