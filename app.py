@@ -14,6 +14,9 @@ ADMIN_PASSWORD = 'admin123'
 # Use environment variable for the database URL for Vercel deployment
 DATABASE_URL = os.environ.get('SUPABASE_DATABASE_URL')
 if not DATABASE_URL:
+    # This error should have been caught by Vercel's logs, but
+    # it's good practice to keep it.
+    print("Error: SUPABASE_DATABASE_URL environment variable is not set.")
     raise RuntimeError("SUPABASE_DATABASE_URL environment variable is not set.")
 
 # ----------------- DB Helpers -----------------
@@ -23,9 +26,16 @@ def get_db():
     Uses a dictionary cursor for easy access to row data by column name.
     """
     if 'db' not in g:
-        g.db = psycopg2.connect(DATABASE_URL)
-        # Use DictCursor to mimic sqlite3.Row functionality
-        g.db.cursor_factory = psycopg2.extras.DictCursor
+        try:
+            g.db = psycopg2.connect(DATABASE_URL)
+            # Use DictCursor to mimic sqlite3.Row functionality
+            g.db.cursor_factory = psycopg2.extras.DictCursor
+            print("Successfully connected to the database!")
+        except psycopg2.OperationalError as e:
+            # This will print the exact error to the Vercel logs
+            print(f"Database connection failed: {e}")
+            raise RuntimeError("Could not connect to the database. Check your environment variable.")
+
     return g.db
 
 @app.teardown_appcontext
@@ -34,36 +44,44 @@ def close_db(error=None):
     db = g.pop('db', None)
     if db is not None:
         db.close()
+        print("Database connection closed.")
 
 def init_db():
     """
     Initializes the database schema if tables do not exist.
     Note the PostgreSQL syntax differences (e.g., SERIAL for AUTOINCREMENT, TEXT for NOT NULL).
     """
-    with get_db() as conn:
-        with conn.cursor() as cur:
-            # Create feedback table
-            cur.execute("""
-                CREATE TABLE IF NOT EXISTS feedback (
-                    id SERIAL PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    message TEXT NOT NULL,
-                    category TEXT,
-                    selected_name TEXT
-                )
-            """)
-            # Create users table
-            cur.execute("""
-                CREATE TABLE IF NOT EXISTS users (
-                    id SERIAL PRIMARY KEY,
-                    username TEXT UNIQUE NOT NULL,
-                    fullname TEXT NOT NULL,
-                    email TEXT UNIQUE NOT NULL,
-                    password TEXT NOT NULL,
-                    blocked INTEGER DEFAULT 0
-                )
-            """)
-        conn.commit()
+    try:
+        with get_db() as conn:
+            with conn.cursor() as cur:
+                # Create feedback table
+                # The IF NOT EXISTS clause prevents an error if the table already exists.
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS feedback (
+                        id SERIAL PRIMARY KEY,
+                        name TEXT NOT NULL,
+                        message TEXT NOT NULL,
+                        category TEXT,
+                        selected_name TEXT
+                    )
+                """)
+                # Create users table
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS users (
+                        id SERIAL PRIMARY KEY,
+                        username TEXT UNIQUE NOT NULL,
+                        fullname TEXT NOT NULL,
+                        email TEXT UNIQUE NOT NULL,
+                        password TEXT NOT NULL,
+                        blocked INTEGER DEFAULT 0
+                    )
+                """)
+            conn.commit()
+            print("Database tables initialized successfully!")
+    except Exception as e:
+        # Catch any exceptions during table creation and print them
+        print(f"Error during database initialization: {e}")
+        raise
 
 def ensure_blocked_column():
     """
@@ -79,6 +97,7 @@ def ensure_blocked_column():
         with db.cursor() as cur:
             cur.execute("ALTER TABLE users ADD COLUMN blocked INTEGER DEFAULT 0")
         db.commit()
+        print("'blocked' column added successfully.")
 
 
 # ----------------- Routes -----------------
