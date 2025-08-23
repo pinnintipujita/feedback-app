@@ -1,24 +1,142 @@
-<!-- templates/edit_feedback.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Feedback</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+            --accent-color: #f59e0b;
+            --background-color: #f9fafb;
+            --text-color: #1f2937;
+            --card-background: #ffffff;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 1rem;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        button, .btn-link {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        button:hover, .btn-link:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-link {
+            background-color: #6b7280;
+        }
+        
+        .btn-link:hover {
+            background-color: #4b5563;
+        }
+
+    </style>
 </head>
-<body class="form-body">
-    <div class="form-container">
-        <h2>Edit Feedback</h2>
-        <form method="POST">
-            <label for="name">Name:</label><br>
-            <input type="text" name="name" value="{{ feedback.name }}" required><br><br>
-
-            <label for="feedback">Feedback:</label><br>
-            <textarea name="feedback" rows="4" required>{{ feedback.message }}</textarea><br><br>
-
-            <button type="submit">Update</button>
-            <a href="{{ url_for('admin_dashboard') }}">Cancel</a>
-        </form>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>Edit Feedback</h2>
+            <form method="POST">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" value="{{ feedback.name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="feedback">Feedback:</label>
+                    <textarea id="feedback" name="feedback" rows="4" required>{{ feedback.message }}</textarea>
+                </div>
+                <div class="action-buttons">
+                    <button type="submit">Update</button>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn-link">Cancel</a>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>

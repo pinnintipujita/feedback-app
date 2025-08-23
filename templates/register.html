@@ -1,166 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>User Login & Registration</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<style>
-/* Background - gradient with abstract shapes */
-body { 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #d7e9f7, #f0f4f8);
-    margin:0; 
-    padding:0; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login & Registration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+            --accent-color: #f59e0b;
+            --background-color: #f9fafb;
+            --text-color: #1f2937;
+            --card-background: #ffffff;
+            --border-color: #e5e7eb;
+            --red-color: #dc3545;
+            --green-color: #28a745;
+        }
 
-/* Decorative abstract circles */
-body::before, body::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(100, 181, 246, 0.15);
-    z-index: 0;
-}
-body::before {
-    width: 300px; height: 300px;
-    top: -100px; left: -100px;
-}
-body::after {
-    width: 400px; height: 400px;
-    bottom: -150px; right: -150px;
-}
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #d7e9f7, #f0f4f8);
+            margin: 0; 
+            padding: 0; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
 
-/* Container */
-.container { 
-    position: relative;
-    z-index: 1;
-    width: 400px; 
-    background: rgba(255,255,255,0.9);
-    padding: 50px 35px; 
-    border-radius: 30px 5px 30px 5px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.1); 
-    text-align:center; 
-    backdrop-filter: blur(8px);
-    animation: fadeIn 0.8s ease-in-out;
-}
+        body::before, body::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(100, 181, 246, 0.15);
+            z-index: 0;
+            filter: blur(50px);
+        }
+        body::before {
+            width: 300px; height: 300px;
+            top: -50px; left: -50px;
+        }
+        body::after {
+            width: 400px; height: 400px;
+            bottom: -50px; right: -50px;
+        }
 
-/* Smooth fade animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+        .container { 
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 400px; 
+            background: rgba(255, 255, 255, 0.92);
+            padding: 2.5rem 2rem; 
+            border-radius: 0.75rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1); 
+            text-align: center; 
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.8s ease-in-out;
+            border: 1px solid var(--border-color);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-/* Title */
-h2 { 
-    margin-bottom:25px; 
-    color:#1e3c72; 
-    font-size: 26px; 
-    font-weight: bold;
-}
+        h2 { 
+            margin-bottom: 1.5rem; 
+            color: var(--primary-color);
+            font-size: 1.625rem; 
+            font-weight: 700;
+        }
 
-/* Inputs */
-input { 
-    width:100%; 
-    padding:14px; 
-    margin:14px 0; 
-    border-radius:10px; 
-    border:1px solid #ccc; 
-    transition: all 0.3s ease; 
-    background: #f9fbfd;
-    font-size: 15px;
-}
-input:focus {
-    border-color: #64b5f6;
-    outline: none;
-    box-shadow: 0 0 8px rgba(100,181,246,0.4);
-}
+        form { 
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
 
-/* Buttons */
-button { 
-    width:100%; 
-    padding:14px; 
-    background: linear-gradient(135deg, #1e88e5, #42a5f5);
-    color:#fff; 
-    font-weight:600;
-    font-size: 15px;
-    border:none; 
-    border-radius:10px; 
-    cursor:pointer; 
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-button:hover { 
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(66,165,245,0.4);
-}
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
 
-/* Messages */
-.message { 
-    margin-top:15px; 
-    font-weight:bold; 
-    font-size: 14px;
-}
-.message.success { color:#2e7d32; }
-.message.error { color:#c62828; }
+        label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
 
-/* Toggle link */
-.toggle-link { 
-    display:block; 
-    margin-top:20px; 
-    cursor:pointer; 
-    color:#1565c0; 
-    text-decoration:none; 
-    font-weight:500;
-    transition: color 0.3s;
-}
-.toggle-link:hover { 
-    color:#0d47a1;
-}
+        input { 
+            width: 100%; 
+            padding: 0.75rem;
+            border-radius: 0.5rem; 
+            border: 1px solid var(--border-color); 
+            transition: all 0.3s ease; 
+            background: var(--background-color);
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
 
-/* Hide form */
-.hidden { display:none; }
-</style>
+        button { 
+            width: 100%; 
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            color: white; 
+            font-weight: 600;
+            font-size: 1rem;
+            border: none; 
+            border-radius: 0.5rem; 
+            cursor: pointer; 
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        
+        button:hover { 
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .message { 
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        .message.success { 
+            background-color: #dcfce7; 
+            color: var(--green-color); 
+        }
+        .message.error { 
+            background-color: #fee2e2; 
+            color: var(--red-color); 
+        }
+        
+        .toggle-link { 
+            display: block; 
+            margin-top: 1.5rem; 
+            cursor: pointer; 
+            color: var(--primary-color); 
+            text-decoration: none; 
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .toggle-link:hover { 
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
 <div class="container">
     <h2 id="formTitle">{{ 'Update User' if edit_mode else 'Login' }}</h2>
     
-    <!-- Login Form -->
-    <form id="loginForm" method="POST" {% if edit_mode %}class="hidden"{% endif %}>
+    <form id="loginForm" method="POST" action="{{ url_for('login_register') }}" {% if edit_mode %}class="hidden"{% endif %}>
         <input type="hidden" name="action" value="login">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
+        <div class="form-group">
+            <label for="login-username">Username</label>
+            <input type="text" id="login-username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" name="password" required>
+        </div>
         <button type="submit">Login</button>
     </form>
 
-    <!-- Register / Edit Form -->
     <form id="registerForm" method="POST"
-          action="{{ url_for('edit_user', user_id=user['id']) if edit_mode else url_for('login_register') }}"
+          action="{{ url_for('edit_user', user_id=user.id) if edit_mode else url_for('login_register') }}"
           class="{% if not edit_mode %}hidden{% endif %}">
 
         <input type="hidden" name="action" value="{{ 'edit' if edit_mode else 'register' }}">
 
-        <label for="fullname">User Details:</label>
-        <input type="text" id="fullname" name="fullname" placeholder="Full Name"
-               value="{{ user['fullname'] if edit_mode else '' }}" required>
-
-        <input type="text" name="username" placeholder="Username"
-               value="{{ user['username'] if edit_mode else '' }}" required>
-
-        <input type="email" name="email" placeholder="Email"
-               value="{{ user['email'] if edit_mode else '' }}" required>
-
-        <input type="password" name="password" placeholder="Password"
-               {% if not edit_mode %} required {% endif %}>
+        <div class="form-group">
+            <label for="fullname">Full Name</label>
+            <input type="text" id="fullname" name="fullname" 
+                   value="{{ user.fullname if edit_mode else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="reg-username">Username</label>
+            <input type="text" id="reg-username" name="username" 
+                   value="{{ user.username if edit_mode else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" 
+                   value="{{ user.email if edit_mode else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="reg-password">Password</label>
+            <input type="password" id="reg-password" name="password" 
+                   {% if not edit_mode %} required {% endif %}>
+        </div>
 
         <button type="submit">{{ 'Update User' if edit_mode else 'Register' }}</button>
     </form>
 
-    <!-- Messages -->
     {% if error %}
         <p class="message error">{{ error }}</p>
     {% endif %}
@@ -168,7 +214,6 @@ button:hover {
         <p class="message success">{{ success }}</p>
     {% endif %}
 
-    <!-- Toggle Link (hidden in edit mode) -->
     {% if not edit_mode %}
         <span class="toggle-link" onclick="toggleForms()">Don't have an account? Register</span>
     {% endif %}

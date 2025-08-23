@@ -2,188 +2,376 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin User View</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; background:#f4f8fb; margin:0; padding:20px; }
-        h2 { margin-bottom:10px; }
-        .stats { display:flex; gap:20px; margin-bottom:20px; }
-        .card { background:white; padding:20px; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.1); flex:1; text-align:center; }
-        .dropdown { margin-bottom:20px; }
-        select { padding:8px 12px; border-radius:6px; border:1px solid #ccc; }
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+            --accent-color: #f59e0b;
+            --background-color: #f9fafb;
+            --text-color: #1f2937;
+            --card-background: #ffffff;
+            --border-color: #e5e7eb;
+            --red-color: #dc3545;
+            --green-color: #28a745;
+        }
 
-        /* Table styling with black borders */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: var(--card-background);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-actions .close-btn {
+            text-decoration: none;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        
+        .header-actions .close-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        h2 {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 1.75rem;
+        }
+
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stats-card {
+            background-color: #eef2ff;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            flex: 1;
+        }
+
+        .stats-card h3 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .stats-card p {
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .view-toggle {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .view-toggle label {
+            font-weight: 600;
+        }
+
+        .view-toggle select {
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-background);
+        }
+
         table {
-            width:100%;
+            width: 100%;
             border-collapse: collapse;
-            background:white;
-            border-radius:8px;
-            overflow:hidden;
-            border:1px solid black;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
         }
+
         th, td {
-            padding:12px 15px;
-            border:1px solid black;
-            text-align:left;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
         }
+
         th {
-            background:#3f51b5;
-            color:white;
-        }
-        tr:hover { background:#f9f9f9; }
-
-        table tr:last-child td {
-            border-bottom:2px solid black;
+            background-color: #eef2ff;
+            color: #333;
+            font-weight: 600;
         }
 
-        .hidden { display:none; }
-
-        /* Close button style */
-        .close-btn {
-            display:inline-block;
-            background:#082848;
-            color:white;
-            padding:8px 14px;
-            border-radius:6px;
-            font-size:14px;
-            font-weight:600;
-            text-decoration:none;
-            transition: background 0.3s ease;
-            margin-bottom:15px;
-        }
-        .close-btn:hover { background:#3e6ea1; }
-
-        /* Action dropdown style */
-        .action-dropdown {
-            padding:6px 10px;
-            border-radius:6px;
-            border:1px solid #333;
-            background:#f9f9f9;
-            font-size:14px;
+        tr:nth-child(even) {
+            background-color: #f6f8fb;
         }
 
-        /* Blocked user styling */
-        .blocked {
-            color:red;
-            font-weight:bold;
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            white-space: nowrap;
+        }
+        
+        .btn-edit {
+            background-color: var(--green-color);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #218838;
+            transform: scale(1.03);
+        }
+
+        .btn-delete {
+            background-color: var(--red-color);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+            transform: scale(1.03);
+        }
+
+        .btn-block {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-block:hover {
+            background-color: #d9910d;
+            transform: scale(1.03);
+        }
+
+        .btn-unblock {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .btn-unblock:hover {
+            background-color: #059669;
+            transform: scale(1.03);
+        }
+
+        .btn-blocked {
+            background-color: var(--red-color);
+            color: white;
+            cursor: default;
+        }
+        
+        .blocked-user {
+            color: var(--red-color);
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive Table */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem 0.5rem;
+            }
+
+            .stats-container {
+                flex-direction: column;
+            }
+            
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            
+            tr {
+                border: 1px solid var(--border-color);
+                border-radius: 0.5rem;
+                margin-bottom: 1rem;
+            }
+            
+            td {
+                border: none;
+                border-bottom: 1px solid var(--border-color);
+                position: relative;
+                padding-left: 50%;
+                text-align: right;
+            }
+            
+            td::before {
+                position: absolute;
+                top: 0.8rem;
+                left: 1rem;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: 600;
+            }
+            
+            #userTable td:nth-of-type(1)::before { content: "ID"; }
+            #userTable td:nth-of-type(2)::before { content: "Full Name"; }
+            #userTable td:nth-of-type(3)::before { content: "Username"; }
+            #userTable td:nth-of-type(4)::before { content: "Email"; }
+            #userTable td:nth-of-type(5)::before { content: "Actions"; }
+            
+            #feedbackTable td:nth-of-type(1)::before { content: "ID"; }
+            #feedbackTable td:nth-of-type(2)::before { content: "Username"; }
+            #feedbackTable td:nth-of-type(3)::before { content: "College"; }
+            #feedbackTable td:nth-of-type(4)::before { content: "Feedback"; }
         }
     </style>
 </head>
 <body>
-
-    <!-- Close Button -->
-    <a href="{{ url_for('admin_dashboard') }}" class="close-btn">✖ Close</a>
-
-    <h2>📊 Admin User View</h2>
-
-    <!-- Stats Section -->
-    <div class="stats">
-        <div class="card">
-            <h3>{{ user_count }}</h3>
-            <p>Total Users</p>
+    <div class="container">
+        <div class="header-actions">
+            <h2>📊 Admin User View</h2>
+            <a href="{{ url_for('admin_dashboard') }}" class="close-btn">✖ Close</a>
         </div>
-        <div class="card">
-            <h3>{{ feedback_count }}</h3>
-            <p>Total Feedbacks</p>
+
+        <div class="stats-container">
+            <div class="stats-card">
+                <h3>{{ user_count }}</h3>
+                <p>Total Users</p>
+            </div>
+            <div class="stats-card">
+                <h3>{{ feedback_count }}</h3>
+                <p>Total Feedbacks</p>
+            </div>
         </div>
+
+        <div class="view-toggle">
+            <label for="viewSelect">Select View:</label>
+            <select id="viewSelect" onchange="toggleView()">
+                <option value="users">Users</option>
+                <option value="feedback">Feedback</option>
+            </select>
+        </div>
+
+        <!-- Users Table -->
+        <table id="userTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr class="{% if user.blocked == 1 %}blocked-user{% endif %}">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.fullname }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <div class="actions">
+                            {% if user.blocked == 1 %}
+                                <button class="btn btn-blocked">🚫 Blocked</button>
+                                <form action="{{ url_for('block_user', user_id=user.id) }}" method="get">
+                                    <button type="submit" class="btn btn-unblock">🔓 Unblock</button>
+                                </form>
+                            {% else %}
+                                <a href="{{ url_for('edit_user', user_id=user.id) }}" class="btn btn-edit">✏️ Edit</a>
+                                <form action="{{ url_for('block_user', user_id=user.id) }}" method="get">
+                                    <button type="submit" class="btn btn-block">🚫 Block</button>
+                                </form>
+                                <form action="{{ url_for('delete_user', user_id=user.id) }}" method="post" onsubmit="return confirm('Are you sure you want to delete user {{ user.username }}?');">
+                                    <button type="submit" class="btn btn-delete">🗑️ Delete</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Feedback Table -->
+        <table id="feedbackTable" class="hidden">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Message</th>
+                    <th>Category</th>
+                    <th>Selected Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fb in feedbacks %}
+                <tr>
+                    <td>{{ fb.id }}</td>
+                    <td>{{ fb.name }}</td>
+                    <td>{{ fb.message }}</td>
+                    <td>{{ fb.category }}</td>
+                    <td>{{ fb.selected_name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
-    <!-- Dropdown to toggle tables -->
-    <div class="dropdown">
-        <label for="viewSelect">Select View:</label>
-        <select id="viewSelect" onchange="toggleView()">
-            <option value="users">Users</option>
-            <option value="feedback">Feedback</option>
-        </select>
-    </div>
+    <script>
+        function toggleView() {
+            const selected = document.getElementById("viewSelect").value;
+            const userTable = document.getElementById("userTable");
+            const feedbackTable = document.getElementById("feedbackTable");
 
-    <!-- Users Table -->
-    <table id="userTable">
-        <tr>
-            <th>ID</th>
-            <th>Full Name</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Actions</th>
-        </tr>
-        {% for user in users %}
-        <tr class="{% if user['blocked'] == 1 %}blocked{% endif %}" {% if user['blocked'] == 1 %}style="font-weight:bold;"{% endif %}>
-            <td>{{ user['id'] }}</td>
-            <td>{{ user['fullname'] }}</td>
-            <td>{{ user['username'] }}</td>
-            <td>{{ user['email'] }}</td>
-            <td>
-                {% if user['blocked'] == 1 %}
-                    <!-- Blocked user -->
-                    <button style="background:black; color:red; font-weight:bold; cursor:default;">🚫 Blocked</button>
-                    <a href="{{ url_for('block_user', user_id=user['id']) }}" onclick="return confirm('Do you want to unblock this user?');">
-                        <button style="background:green; color:white;">🔓 Unblock</button>
-                    </a>
-                {% else %}
-                    <!-- Action dropdown for unblocked users -->
-                    
-                         <select class="action-dropdown" onchange="handleAction('{{ user.id }}', this.value)">
-
->
-
-                        <option value="">---Select---</option>
-                        <option value="edit">✏️ Edit</option>
-                        <option value="block">🚫 Block</option>
-                        <option value="delete">🗑️ Delete</option>
-                    </select>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-
-    <!-- Feedback Table -->
-    <table id="feedbackTable" class="hidden">
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>College</th>
-            <th>Feedback</th>
-        </tr>
-        {% for fb in feedbacks %}
-        <tr>
-            <td>{{ fb[0] }}</td>
-            <td>{{ fb[1] }}</td>
-            <td>{{ fb[2] }}</td>
-            <td>{{ fb[3] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-<script>
-    // Toggle between Users and Feedback tables
-    function toggleView() {
-        const selected = document.getElementById("viewSelect").value;
-        document.getElementById("userTable").classList.add("hidden");
-        document.getElementById("feedbackTable").classList.add("hidden");
-
-        if (selected === "users") {
-            document.getElementById("userTable").classList.remove("hidden");
-        } else {
-            document.getElementById("feedbackTable").classList.remove("hidden");
-        }
-    }
-
-    // Handle actions for users
-    function handleAction(userId, action) {
-        if (!action) return;
-        userId = encodeURIComponent(userId); // safe
-        if (action === "edit") {
-            window.location.href = "/edit_user/" + userId;
-        } else if (action === "block") {
-            if (confirm("Do you really want to block this user?")) {
-                window.location.href = "/block_user/" + userId;
-            }
-        } else if (action === "delete") {
-            if (confirm("Are you sure you want to delete user ID " + userId + "?")) {
-                window.location.href = "/delete_user/" + userId;
+            if (selected === "users") {
+                userTable.classList.remove("hidden");
+                feedbackTable.classList.add("hidden");
+            } else {
+                userTable.classList.add("hidden");
+                feedbackTable.classList.remove("hidden");
             }
         }
-    }
-</script>
+    </script>
 </body>
 </html>

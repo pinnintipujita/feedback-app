@@ -1,17 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Thank You!</title>
-<link rel="stylesheet" href="../static/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+            --accent-color: #f59e0b;
+            --background-color: #f9fafb;
+            --text-color: #1f2937;
+            --card-background: #ffffff;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 1rem;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2.5rem 2rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .message {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+        
+        .message b {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .message i {
+            display: block;
+            font-style: normal;
+            font-size: 1rem;
+            color: #6b7280;
+        }
+
+        .go-back-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .go-back-link:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+    </style>
 </head>
-<body class="thankyou-body">
-<div class="thankyou-container">
-    <div class="thankyou-message">
-        <b>Thank you</b>, {{ name }}!<br>
-        <i> Your feedback has been received.</i>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="message">
+                <b>Thank you</b>, {{ name }}!
+                <i>Your feedback has been received.</i>
+            </div>
+            <a href="{{ url_for('login_register') }}" class="go-back-link">Go back to login</a>
+        </div>
     </div>
-    <a class="back-link" href="/">Go back</a>
-</div>
 </body>
 </html>

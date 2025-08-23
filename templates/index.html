@@ -1,150 +1,205 @@
 <!DOCTYPE html> 
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Feedback Collector</title>
-<link rel="stylesheet" href="../static/style.css">
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f5f5f5;
-        margin: 0;
-        padding: 0;
-    }
-    .container {
-        width: 500px;
-        background: #fff;
-        border-radius: 12px;
-        padding: 30px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        margin-top: 50px;
-        margin-left: 60px;
-    }
-    .top-bar {
-        text-align: right;
-        margin-bottom: 15px;
-    }
-    .login-button {
-        background: #333;
-        color: #fff;
-        text-decoration: none;
-        padding: 8px 14px;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-    h2 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #222;
-    }
-    label {
-        display: block;
-        margin-top: 12px;
-        font-weight: bold;
-    }
-    input, textarea {
-        width: 100%;
-        padding: 10px;
-        margin-top: 6px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-    button {
-        width: 100%;
-        padding: 12px;
-        background: orange;
-        border: none;
-        color: white;
-        font-size: 15px;
-        border-radius: 6px;
-        margin-top: 15px;
-        cursor: pointer;
-    }
-    button:hover {
-        background: darkorange;
-    }
-    #statusMessage {
-        margin-top: 10px;
-        text-align: center;
-        font-size: 13px;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Collector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+            --accent-color: #f59e0b;
+            --background-color: #f9fafb;
+            --text-color: #1f2937;
+            --card-background: #ffffff;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f9f6f7, #f3e8f9, #f8e1f4);
+            background-attachment: fixed;
+        }
+
+        .petal {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: url("https://i.ibb.co/qjPn7m3/petal.png") no-repeat center/contain;
+            animation: fall linear infinite;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10%) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0.5; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 2.5rem 2rem;
+            border-radius: 1.25rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            backdrop-filter: blur(15px);
+        }
+
+        .top-bar {
+            text-align: right;
+            margin-bottom: 1.5rem;
+        }
+        
+        .login-button {
+            background: #333;
+            color: #fff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.1s;
+        }
+
+        .login-button:hover {
+            background: #555;
+            transform: translateY(-2px);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.625rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .status-message {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+
+        .error {
+            color: #dc3545;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
+    <script>
+        for (let i = 0; i < 15; i++) {
+            const petal = document.createElement("div");
+            petal.classList.add("petal");
+            petal.style.left = Math.random() * 100 + "vw";
+            petal.style.animationDuration = 8 + Math.random() * 5 + "s";
+            petal.style.animationDelay = Math.random() * 5 + "s";
+            document.body.appendChild(petal);
+        }
+    </script>
 
-<div class="container">
-    <div class="top-bar">
-        <a href="{{ url_for('admin_login') }}" class="login-button">Admin Login</a>
-    </div>
+    <div class="container">
+        <!--<div class="top-bar">
+            <a href="{{ url_for('admin_login') }}" class="login-button">Admin Login</a>
+        </div> -->
 
-    <!-- ✅ Jinja-enabled heading -->
-    <h2>
-      {% if category and name %}
-        Submit Your Feedback for {{ name }} ({{ category }})
-      {% else %}
-        Submit Your Feedback
-      {% endif %}
-    </h2>
+        <h2>
+            {% if category and name %}
+                Submit Your Feedback for {{ name }} ({{ category }})
+            {% else %}
+                Submit Your Feedback
+            {% endif %}
+        </h2>
 
-    <!-- ✅ Jinja-enabled form -->
-    <form id="feedbackForm" method="POST" action="/submit">
-        {% if category and name %}
-          <input type="hidden" name="category" value="{{ category }}">
-          <input type="hidden" name="selected_name" value="{{ name }}">
+        <form id="feedbackForm" method="POST" action="{{ url_for('submit_feedback') }}">
+            {% if category %}
+              <input type="hidden" name="category" value="{{ category }}">
+            {% endif %}
+            {% if name %}
+              <input type="hidden" name="selected_name" value="{{ name }}">
+            {% endif %}
+
+            <div class="form-group">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Your Feedback:</label>
+                <textarea id="message" name="message" rows="4" required></textarea>
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        {% if error %}
+        <p class="status-message error">{{ error }}</p>
         {% endif %}
 
-        <label for="name">Your Name:</label>
-        <input type="text" id="name" name="name" required>
-
-        <label for="message">Your Feedback:</label>
-        <textarea id="message" name="message" rows="4" required></textarea>
-
-        <button type="submit">Submit</button>
-    </form>
-
-    <div id="statusMessage"></div>
-</div>
-
-<script>
-document.getElementById('feedbackForm').addEventListener('submit', function (e) {
-    const name = document.getElementById('name').value.trim();
-    const message = document.getElementById('message').value.trim();
-    const statusMessage = document.getElementById('statusMessage');
-
-    if (!name || !message) {
-        e.preventDefault();
-        statusMessage.textContent = 'Please fill in all fields.';
-        statusMessage.style.color = 'red';
-    } else {
-        statusMessage.textContent = '';
-    }
-});
-
-// Read query parameters
-function getQueryParams() {
-    const params = {};
-    const queryString = window.location.search.substring(1);
-    const pairs = queryString.split("&");
-    for (const pair of pairs) {
-        const [key, value] = pair.split("=");
-        params[decodeURIComponent(key)] = decodeURIComponent(value || "");
-    }
-    return params;
-}
-
-const params = getQueryParams();
-if (params.category && params.name) {
-    const title = document.querySelector("h2");
-    title.textContent = `Submit Your Feedback for ${params.name} (${params.category})`;
-
-    // Add hidden fields
-    const form = document.getElementById("feedbackForm");
-    form.insertAdjacentHTML("beforeend", `
-        <input type="hidden" name="category" value="${params.category}">
-        <input type="hidden" name="selected_name" value="${params.name}">
-    `);
-}
-</script>
+    </div>
 </body>
 </html>
